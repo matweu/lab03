@@ -111,8 +111,17 @@ show_histogram_text(const vector<double>bins)
 }
 
 
-int main()
+int main(int argc, char* argv[])
 {
+    if(argc>1)
+    {
+        cerr <<"kolvo: "<< argc<<endl;
+        for(int i=0;i<argc; i++)
+        {
+            cerr<<"argv["<<i<<"]="<<argv[i]<<endl;
+        }
+        return 0;
+    }
     curl_global_init(CURL_GLOBAL_ALL);
     Input input;
     input = read_input(cin,true);
