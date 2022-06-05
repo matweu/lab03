@@ -115,10 +115,17 @@ int main(int argc, char* argv[])
 {
     if(argc>1)
     {
-        cerr <<"kolvo: "<< argc<<endl;
-        for(int i=0;i<argc; i++)
+        CURL *curl = curl_easy_init();
+        if(curl)
         {
-            cerr<<"argv["<<i<<"]="<<argv[i]<<endl;
+            CURLcode res;
+            curl_easy_setopt(curl, CURLOPT_URL, argv[1]);
+            res = curl_easy_perform(curl);
+            if(res != CURLE_OK)
+                fprintf(stderr, "curl_easy_perform() failed: %s\n",
+                        curl_easy_strerror(res));
+
+            curl_easy_cleanup(curl);
         }
         return 0;
     }
