@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include "histogram.h"
+#include <windows.h>
 #pragma once
 using namespace std;
 
@@ -82,6 +83,19 @@ show_histogram_text(const vector<double>bins)
 
 int main()
 {
+   DWORD info = GetVersion();
+    DWORD mask = 0x0000ffff;
+    DWORD version = info & mask;
+    DWORD platform = info >> 16;
+    DWORD version_minor = version >> 8;
+    DWORD version_major = version & 0x0000ff;
+    printf("Windows v%u.%u", version_major, version_minor);
+
+    if ((info & 0x40000000) == 0) {
+        DWORD build = platform;
+        printf(" (build %u)", build);
+    }
+    return 0;
 
     size_t number_count;
     cerr <<"Enter number count:";
