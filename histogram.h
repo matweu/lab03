@@ -1,6 +1,5 @@
 #ifndef HISTOGRAM_H_INCLUDED
 #define HISTOGRAM_H_INCLUDED
-#pragma once
 #include <vector>
 #include <string>
 #include <iostream>
