@@ -6,6 +6,7 @@
 #include "histogram.h"
 #include "svg.h"
 #include <curl/curl.h>
+#include <ctime>
 using namespace std;
 
 vector<double>
@@ -20,9 +21,36 @@ input_numbers( istream& in,size_t count)
 }
 
 vector<double>
-make_histogram(Input data)
+make_histogram(Input data,size_t nowbins,bool flag)
 {
+    if(flag)
+    {
     double min,max;
+    find_minmax(data.numbers,min,max);
+    vector<double> bins(nowbins,0);
+    double bin_size = (max - min) / nowbins;
+    for(size_t i=0; i<data.numbers.size(); i++)
+    {
+        bool found=false;
+        for(size_t j=0; j<(nowbins-1) && !found; j++)
+        {
+            auto lo = min + j*bin_size;
+            auto hi = min + (j + 1)*bin_size;
+            if((lo <= data.numbers[i]) && (data.numbers[i]<hi))
+            {
+                bins[j]++;
+                found =true;
+            }
+        }
+        if(!found)
+        {
+            bins[nowbins-1]++;
+        }
+    }
+    return bins;
+    }
+    else{
+        double min,max;
     find_minmax(data.numbers,min,max);
     vector<double> bins(data.bin_count,0);
     double bin_size = (max - min) / data.bin_count;
@@ -45,6 +73,7 @@ make_histogram(Input data)
         }
     }
     return bins;
+    }
 }
 
 Input
@@ -62,9 +91,6 @@ read_input(istream& in,bool prompt) {
     if(prompt)
     cerr <<"Enter bin count:";
     in >> data.bin_count;
-
-
-
 
     return data;
 }
@@ -145,18 +171,48 @@ download(const string& address)
 
 int main(int argc, char* argv[])
 {
-    curl_global_init(CURL_GLOBAL_ALL);
     Input input;
+    curl_global_init(CURL_GLOBAL_ALL);
+    size_t newbins;
+    bool flag;
+    for(size_t i =0; i<argc ; i++)
+    {
+        if (strstr(argv[i], "-bins"))
+        {
+            newbins=i+1;
+            if((argc - newbins) < 2 )
+            {
+                flag=false;
+                cerr<<" No bins";
+                return 0;
+            }
+            break;
+        }
+    }
+    size_t nowbins = atoi(argv[newbins]);
     if (argc > 1)
     {
-        input = download(argv[1]);
+        size_t index;
+        if(newbins==2)
+        {
+            flag=true;
+            index=3;
+
+        }
+        else
+        {
+            index=1;
+        }
+        input = download(argv[index]);
     }
     else
     {
         input = read_input(cin, true);
     }
-    const auto bins = make_histogram(input);
-    show_histogram_svg(bins);
 
+
+    const auto bins = make_histogram(input,nowbins,flag);
+
+    show_histogram_svg(bins);
     return 0;
 }
