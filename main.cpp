@@ -7,6 +7,8 @@
 #include "svg.h"
 #include <curl/curl.h>
 #include <ctime>
+#include <windows.h>
+#pragma once
 using namespace std;
 
 vector<double>
@@ -216,3 +218,4 @@ int main(int argc, char* argv[])
     show_histogram_svg(bins);
     return 0;
 }
+
