@@ -177,6 +177,7 @@ int main(int argc, char* argv[])
     curl_global_init(CURL_GLOBAL_ALL);
     size_t newbins;
     bool flag;
+    size_t nowbins;
     for(size_t i =0; i<argc ; i++)
     {
         if (strstr(argv[i], "-bins"))
@@ -188,10 +189,15 @@ int main(int argc, char* argv[])
                 cerr<<" No bins";
                 return 0;
             }
+            if(argv[newbins] != NULL)
+            {
+
+                 nowbins=argv[newbins];
+            }
             break;
         }
     }
-    size_t nowbins = atoi(argv[newbins]);
+     nowbins = atoi(argv[newbins]);
     if (argc > 1)
     {
         size_t index;
